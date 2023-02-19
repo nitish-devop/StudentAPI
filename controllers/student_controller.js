@@ -15,18 +15,20 @@ module.exports.getUserByID = (req, res) => {
     });
 };
 
-module.exports.getUsers = (req, res) => {
-  const snapshot = Students.get();
-  return res.json({
-    status: true,
-    students: snapshot,
+module.exports.getUsers = async (req, res) => {
+  // const citiesRef = db.collection('cities');
+  let students = [];
+  const snapshot = await Students.get();
+  snapshot.forEach(doc => {
+    students.push(doc.data())
   });
+  return res.json({Students : students });
 };
 
 module.exports.createUser = (req, res) => {
   console.log(req.body);
   Students.doc(req.body.id.toString()).set(req.body);
-  return res.json({
+  return res.status(200).json({
     status: true,
     message: "Student Registred",
     Student: req.body,
